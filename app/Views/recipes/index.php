@@ -60,9 +60,19 @@
             <a href="<?= base_url() . "recipes/show/" . $recipe['id'] ?>" class="text-white bg-red-500 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">View</a>
           </div>
         </div>
-
       </div>
     <?php endforeach; ?>
+    <?php if (count($recipes) <= 0) : ?>
+      <a href="<?= base_url() . 'recipes/create' ?>" class="flex mt-20 items-center justify-center gap-2 font-semibold text-gray-500">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+        </svg>
+        <span>Your recipe is empty you can add by click the</span>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </a>
+    <?php endif; ?>
   </div>
 </div>
 <?= $this->endSection() ?>

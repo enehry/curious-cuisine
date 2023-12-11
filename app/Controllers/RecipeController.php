@@ -17,7 +17,7 @@ class RecipeController extends BaseController
   public function index()
   {
     // sort by date descending
-    $data['recipes'] = $this->recipeModel->orderBy('created_at', 'DESC')->findAll();
+    $data['recipes'] = $this->recipeModel->where('user_id', session('id'))->orderBy('created_at', 'DESC')->findAll();
 
     return view('recipes/index', $data);
   }
@@ -88,7 +88,7 @@ class RecipeController extends BaseController
       'preparation' => $this->request->getPost('preparation'),
       'cook' => $this->request->getPost('cook'),
       'type' => $this->request->getPost('type'),
-      'user_id' => 1,
+      'user_id' => session('id'),
     ];
 
     $this->recipeModel->save($data);

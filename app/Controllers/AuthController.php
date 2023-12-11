@@ -49,15 +49,15 @@ class AuthController extends BaseController
 
     if ($user && password_verify($password, $user['password'])) {
       $auth = [
-        'id' => $data['id'],
-        'name' => $data['name'],
-        'email' => $data['email'],
+        'id' => $user['id'],
+        'name' => $user['name'],
+        'email' => $user['email'],
         'isLoggedIn' => TRUE
       ];
 
       $session->set($auth);
 
-      return redirect()->to('/home');
+      return redirect()->to(base_url('recipes'));
     }
 
     return redirect()->to(base_url('login'))->with('message', [
@@ -103,5 +103,16 @@ class AuthController extends BaseController
 
       return view('auth/register', $data);
     }
+  }
+
+  // logout the current user
+  public function logout()
+  {
+    session()->destroy();
+
+    return redirect()->to(base_url('login'))->with('message', [
+      'type' => 'success',
+      'text' => 'Your account has been successfully logged out',
+    ]);
   }
 }

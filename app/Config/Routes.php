@@ -8,17 +8,18 @@ use CodeIgniter\Router\RouteCollection;
 // $routes->get('/', 'Home::index');
 
 
-$routes->get('/login', 'AuthController::login', ['as' => 'login']);
-$routes->post('/login', 'AuthController::submitLogin', ['as' => 'submit-login']);
-$routes->get('/register', 'AuthController::register', ['as' => 'register']);
-$routes->post('/register', 'AuthController::submitRegister', ['as' => 'submit-register']);
+$routes->get('/login', 'AuthController::login', ['filter' => 'guest-guard', 'as' => 'login']);
+$routes->post('/login', 'AuthController::submitLogin', ['filter' => 'guest-guard', 'as' => 'submit-login']);
+$routes->get('/logout', 'AuthController::logout', ['as' => 'logout']);
+$routes->get('/register', 'AuthController::register', ['filter' => 'guest-guard', 'as' => 'register']);
+$routes->post('/register', 'AuthController::submitRegister', ['filter' => 'guest-guard', 'as' => 'submit-register']);
 
 
 
 $routes->get('/', 'Home::index');
 
 
-$routes->group('recipes', function ($routes) {
+$routes->group('recipes', ['filter' => 'authGuard'], function ($routes) {
   $routes->get('/', 'RecipeController::index');
   $routes->get('show/(:num)', 'RecipeController::show/$1', ['as' => 'show-recipe']);
   $routes->get('create', 'RecipeController::create', ['as' => 'create-recipe']);
