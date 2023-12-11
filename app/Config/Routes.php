@@ -18,6 +18,12 @@ $routes->post('/register', 'AuthController::submitRegister', ['filter' => 'guest
 
 $routes->get('/', 'Home::index');
 
+$routes->get('/profile', 'AuthController::profile', ['filter' => 'authGuard', 'as' => 'user-profile']);
+$routes->post('/profile', 'AuthController::updateProfile', ['filter' => 'authGuard', 'as' => 'update-profile']);
+
+$routes->post('/comment', 'RecipeController::addComment', ['filter' => 'authGuard', 'as' => 'add-comment']);
+$routes->delete('/comment/(:num)', 'RecipeController::deleteComment/$1', ['filter' => 'authGuard', 'as' => 'delete-comment']);
+
 
 $routes->group('recipes', ['filter' => 'authGuard'], function ($routes) {
   $routes->get('/', 'RecipeController::index');

@@ -3,15 +3,18 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\CommentModel;
 use App\Models\RecipeModel;
 
 class RecipeController extends BaseController
 {
   protected $recipeModel;
+  protected $commentModel;
 
   public function __construct()
   {
     $this->recipeModel = new RecipeModel();
+    $this->commentModel = new CommentModel();
   }
 
   public function index()
@@ -41,6 +44,11 @@ class RecipeController extends BaseController
       ->select('users.name')
       ->join('users', 'users.id = recipes.user_id')
       ->where('recipes.id', $id)->first();
+    $comments = $this->commentModel
+      ->select('comments.*')
+      ->select('users.name')
+      ->join('users', 'users.id = comments.user_id')
+      ->where('comments.recipe_id', $id)->orderBy('created_at', 'DESC')->findAll();
 
     if (!$recipe) {
 
@@ -54,8 +62,7 @@ class RecipeController extends BaseController
     }
 
     $data['recipe'] = $recipe;
-
-
+    $data['comments'] = $comments;
 
     return view('recipes/show', $data);
   }
@@ -185,6 +192,60 @@ class RecipeController extends BaseController
       [
         'type' => 'success',
         'text' => 'Recipe deleted successfully.'
+      ]
+    );
+  }
+
+  public function addComment()
+  {
+    helper(['form']);
+
+    $id = $this->request->getPost('id');
+
+    $comment = $this->request->getPost('comment');
+
+    if (empty($comment)) {
+      return redirect()->back();
+    }
+
+    $data = [
+      'comment' => $comment,
+      'user_id' => session('id'),
+      'recipe_id' => $id
+    ];
+
+    $this->commentModel->save($data);
+
+    return redirect()->back()->with(
+      'message',
+      [
+        'type' => 'success',
+        'text' => 'Comment added successfully.'
+      ]
+    );
+  }
+
+  public function deleteComment($id)
+  {
+    $comment = $this->commentModel->find($id);
+
+    if (!$comment) {
+      return redirect()->back()->with(
+        'message',
+        [
+          'type' => 'error',
+          'text' => 'Comment does not exist.'
+        ]
+      );
+    }
+
+    $this->commentModel->delete($id);
+
+    return redirect()->back()->with(
+      'message',
+      [
+        'type' => 'success',
+        'text' => 'Comment deleted successfully.'
       ]
     );
   }
